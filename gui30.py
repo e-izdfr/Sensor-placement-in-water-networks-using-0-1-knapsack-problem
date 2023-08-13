@@ -25,31 +25,31 @@ In this segment, a GUI is made and different features of its layout(i.e widgets)
 #sg.theme_previewer()
 #sg.theme('Dark')
 window = sg.Window(  # Making a GUI window(object) named 'window' with the '.Window' command and specifying its attributes(widgets)
-    title='                                                                              جایگذاری حسگر جریان برای شبکه های صنعتی بزرگ ',  
+    title='                                                                                                         Sensor placement in large industrial networks',  
     # Giving the window a title with the 'title' variable
     layout=[  # Specifying the different features of the layout(widgets) with the 'layout' variable
-        [sg.InputText(size =(15, 1), key='IN1'),  # Receiving a string from the user with the '.InputText' command and giving it a key named 'IN1': Note that all the inputs from the user 
-         # are automatically stored in a dictionary so we need to assign a key to the input text. 
-         sg.Text(text=':اندیس آخرین سطر فایل اکسل خود را وارد کنید')],  # Displaying a text(object) with the '.Text' command: The user 
+        [sg.Text(text='Enter the number of rows of your excel file:'),  # Displaying a text(object) with the '.Text' command: The user 
          # should enter the number of rows of his excel file without counting the header row.
-        [sg.InputText(size =(15, 1), key='IN3'),  # Specifying a key 'IN3' for the input string
-         sg.Text(':بودجه خود را وارد کنید')],  # Receiving the current total budget as a string
-        [sg.Button('Click'),  # Adding a button(object) named 'Click' with the .Button command whose clicking makes the sample excel file appear
-         sg.Button('Save', visible=False),  # Adding a button named 'Save' whose clicking saves the sample excel file and making it invisible with 'visible' variable
-         sg.Text(':برای دیدن فایل اکسل نمونه کلیک کنید. نام و مسیر فایل را تغییر ندهید')],  # Some
+         sg.InputText(size =(15, 1), key='IN1')],  # Receiving a string from the user with the '.InputText' command and giving it a key named 'IN1': Note that all the inputs from the user 
+         # are automatically stored in a dictionary so we need to assign a key to the input text.
+        [sg.Text('Enter your budget:'),  # Receiving the current total budget as a string
+        sg.InputText(size =(15, 1), key='IN3')],  # Specifying a key 'IN3' for the input string
+        [sg.Text("Click to see the sample excel file. Don't change the path and the name of the file."),  # Some
          # information about the buttons we're about to make
+         sg.Button('Click'),  # Adding a button(object) named 'Click' with the .Button command whose clicking makes the sample excel file appear
+         sg.Button('Save', visible=False)],  # Adding a button named 'Save' whose clicking saves the sample excel file and making it invisible with 'visible' variable
         [sg.Input(key='_FILEBROWSE_', enable_events=True, visible=False)],  # Adding this event-making command since clicking the 'FileBrowse' button is not considered an
         # event, i.e clicking this button as an input becomes an event.
-        [sg.FileBrowse(key='IN2', file_types=(('EXCEL FILES', '*.xlsx'),), target='_FILEBROWSE_', tooltip=':فایل اکسل خود را انتخاب کنید'),  # Receiving a file path from the user with the '.FileBrowse' command:
+        [sg.Text('Choose your excel file:'),  # Displaying another text
+        sg.FileBrowse(key='IN2', file_types=(('EXCEL FILES', '*.xlsx'),), target='_FILEBROWSE_', tooltip='Choose your excel file:')],  # Receiving a file path from the user with the '.FileBrowse' command:
          # Notice that a key 'IN2' is assigned and the legal input file types have been restricted to excel files with the 'file_types' variable. The 'target' variable assures
          # that clicking this button is considered an event.
-         sg.Text(':فایل اکسل خود را انتخاب کنید')],  # Displaying another text
         [sg.Button('OK', disabled=True)],  # Making an 'OK' button whose clicking starts the validation and optimization process and making it disabled at first with
         # 'disabled' variable
         [sg.ProgressBar(max_value=100, orientation='horizontal', size=(10, 10), visible = False, bar_color=('green', 'white'), style='vista', key ='k')]],  # Making a progress bar with '.ProgreesBar' method and
         # specifying its size with 'size' variable, its orientation with 'orientation' variable, the capacity of the bar with 'max_value' variable, its visibility status with
         # 'visible' variable and giving it a key 'k'
-    margins=(200, 200), icon=ICON, element_justification='right', finalize=True)
+    margins=(200, 200), icon=ICON, element_justification='left', finalize=True)
 window['Click'].set_cursor('hand2')  # Changing the cursor of the 'Click' button to a hand
 window['IN2'].set_cursor('hand2')  # Changing the cursor of the 'IN2' input text to a hand
 event, values = window.read()  # '.read' method executes the input and event assignments. Events are things like clicking a button,choosing an element from a list,etc.
@@ -92,7 +92,7 @@ while True:
             os.startfile('sample.xlsx')  # Opening the file 'sample.xlsx' with '.startfile' command
         
         except:
-            sg.popup('.هم اکنون یک فابل اکسل دیگر باز است. آن را ببندید', title='', background_color='blue', icon=ICON)
+            sg.popup('Another excel file is open right now. Close it.', title='', background_color='blue', icon=ICON)
         
         event = 'Save'  # Saving the excell file(from our view point) since the user has clicked the 'Click' button
         if event == 'Save':  # Checking whether the file has been saved or not(This is always true. Note that there is an invisible 'save' button. Check the layout.)
@@ -133,7 +133,7 @@ while True:
                     window['OK'].set_cursor('arrow')  # Changing the cursor of the 'OK' button to a hand
                     sg.ProgressBar.update(window['k'], visible=False, current_count=0)  # Making the progress bar invisible since the user hasn't saved the
                     # excell file
-                    window2 = sg.popup(".فایل نمونه پر شده را ذخیره نکردید", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                    window2 = sg.popup("You didn't save the filled sample excel file.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                     event , values = window.read()  # Receiving input again
                     if values != None:
                         update(window['IN2'], values['IN2'])
@@ -153,7 +153,7 @@ while True:
                         J.append(i)  # Adding this index to 'J'
 
                 if (not values['IN1'].isnumeric() and values['IN1'] != '') or values['IN1'] == '0':  # Checking whether the input is a natural number or not
-                    window2 = sg.popup('.تعداد سطر ها نامعتبر است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                    window2 = sg.popup('The number of rows is invalid.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                     key = 0  # Updating the value of 'key'
                     event, values = window.read()  # Receiving input again
                     if values != None:
@@ -162,8 +162,8 @@ while True:
 
                 elif values['IN1'] != '' and values['IN1'] is not None:  # Making sure that the user has entered the number of rows and hasn't closed the window
                     if (length - step - 1)  != int(values['IN1']):  # Checking whether the user has counted the number of rows correctly or not
-                        window2 = sg.popup('.در شمارش سطر ها اشتباه کردید', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
-                        window2 = sg.popup('تعدادش', length - step - 1, 'است', title='', background_color='blue', icon=ICON)
+                        window2 = sg.popup('You made a mistake in counting the number of rows.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                        window2 = sg.popup('Its number is', length - step - 1, '.', title='', background_color='blue', icon=ICON)
                         key = 0  # Updating the value of 'key'
                         event, values = window.read()  # Receiving input again
                         if values != None:
@@ -171,7 +171,7 @@ while True:
                         continue  # Going back to the validation cycle
 
                 else:
-                    window2 = sg.popup(".تعداد سطر ها را وارد نکردید", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                    window2 = sg.popup("You didn't enter the number of rows.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                     key = 0  # Updating the value of 'key'
                     event, values = window.read()  # Receiving input again
                     if values != None:
@@ -180,7 +180,7 @@ while True:
 
                 if (not isfloat(values['IN3']) and values['IN3'] != '') or (isfloat(values['IN3']) and float(values['IN3']) < 0):  # Checking whether the input is a nonnegative
                     # real number or not
-                    window2 = sg.popup('.بودجه شما نامعتبر است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                    window2 = sg.popup('Your budget is invalid.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                     key = 0  # Updating the value of 'key'
                     event, values = window.read()  # Receiving input again
                     if values != None:
@@ -188,7 +188,7 @@ while True:
                     continue  # Going back to the validation cycle
 
                 elif values['IN3'] == '' or values['IN3'] is None:  # Making sure that the user has entered the total budget and hasn't closed the window
-                    window2 = sg.popup(".بودجه را وارد نکردید", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                    window2 = sg.popup("You didn't enter the budget.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                     key = 0  # Updating the value of 'key'
                     event, values = window.read()  # Receiving input again
                     if values != None:
@@ -215,7 +215,7 @@ while True:
                                         key = 0  # Updating the value of 'key'
                                         key6 = 0  # Updating the value of 'key6'
                                         if event == 'OK' and table2.iloc[i, j] == 1 :  # Checking whether the cell is still empty or not
-                                            window2 = sg.popup('خانه واقع در سطر', i + 2, 'و ستون', j + 1, '.خالی است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                                            window2 = sg.popup('The cell at row', i + 2, 'and column', j + 1, 'is empty.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                                         break  # Getting out of the first loop since there is a problem with the inputs
                                     
                                     else:
@@ -223,7 +223,7 @@ while True:
                                             key = 0  # Updating the value of 'key'
                                             key6 = 0  # Updating the value of 'key6'
                                             if event == 'OK' and table2.iloc[i, j] == 1 :  # Checking whether the cell is still empty or not
-                                                window2 = sg.popup('خانه واقع در سطر', i + 2, 'و ستون', j + 1, '.خالی است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                                                window2 = sg.popup('The cell at row', i + 2, 'and column', j + 1, 'is empty.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                                             break  # Getting out of the first loop since there is a problem with the inputs
                         
                         if key6 == 0:  # Checking whether there is a problem with inputs or not
@@ -405,7 +405,7 @@ while True:
                         for i in I:
                             if pl.value(x[i]):  # Checking whether the values of the decision variables are 1 or not with '.value' method
                                 LL.append(str(table4.iloc[i, 7]))
-                        window2 = sg.popup(f':باید در مکان های زیر حسگر نصب کنید \n{chr(10).join(LL)}', title='', background_color='blue', icon=ICON)  # Stating where to deploy the sensors
+                        window2 = sg.popup(f'You should place sensors in these locations: \n{chr(10).join(LL)}', title='', background_color='blue', icon=ICON)  # Stating where to deploy the sensors
                         sg.ProgressBar.update(window['k'], visible=False, current_count = 0)  # Updating the 'current_count' attribute of the bar to 0 since the optimization problem
                         # got solved
                     event, values = window.read()  # Receiving input again
@@ -445,7 +445,7 @@ while True:
         window['OK'].Update(disabled=False)  # Making the 'FileBrowse' button visible since the user has (apparently) browsed an excell file
         window['OK'].set_cursor('hand2')  # Changing the cursor of the 'OK' button to a hand
         if values['IN2'] == '':  # Checking whether the user has browsed a file or not
-            window2 = sg.popup("چیزی براوز نکردید.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message: Note that if if a file is already available from the last browse and the user has clicked
+            window2 = sg.popup("You didn't browse anything.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message: Note that if if a file is already available from the last browse and the user has clicked
             # the button but hasn't browsed a file then that last file is considered.
             window['OK'].Update(disabled=True)  # Making the 'OK' button invisible since the user hasn't browsed a file
             window['OK'].set_cursor('arrow')  # Changing the cursor of the 'OK' button to a hand
@@ -472,7 +472,7 @@ while True:
                     J.append(i)  # Adding this index to 'J'
 
             if (not values['IN1'].isnumeric() and values['IN1'] != '') or values['IN1'] == '0':  # Checking whether the input is a natural number or not
-                window2 = sg.popup('.تعداد سطرها نامعتبر است', title='', background_color='blue', icon=ICON )  # Displaying the relevant message
+                window2 = sg.popup('The number of rows is invalid.', title='', background_color='blue', icon=ICON )  # Displaying the relevant message
                 key = 0  # Updating the value of 'key'
                 event, values = window.read()  # Receiving input again
                 if values != None:
@@ -481,8 +481,8 @@ while True:
 
             elif values['IN1'] != '':  # Making sure that the user has entered the number of rows
                 if (length - step - 1) != int(values['IN1']):  # Checking whether the user has counted the number of rows correctly or not
-                    window2 = sg.popup('.در شمارش تعداد سطر ها اشتباه کردید', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
-                    window2 = sg.popup('تعدادش', length - step - 1, 'است', title='', background_color='blue', icon=ICON)
+                    window2 = sg.popup('You made a mistake in counting the number of rows.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                    window2 = sg.popup('Its number is', length - step - 1, '.', title='', background_color='blue', icon=ICON)
                     key = 0  # Updating the value of 'key'
                     event, values = window.read()  # Receiving input again
                     if values != None:
@@ -490,7 +490,7 @@ while True:
                     continue  # Going back to the validation cycle
 
             else:
-                window2 = sg.popup(".تعداد سطر ها را وارد نکردید", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                window2 = sg.popup("You didn't enter the number of rows.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                 key = 0  # Updating the value of 'key'
                 event, values = window.read()  # Receiving input again
                 if values != None:
@@ -499,7 +499,7 @@ while True:
 
             if (not isfloat(values['IN3']) and values['IN3'] != '') or (isfloat(values['IN3']) and float(values['IN3']) < 0):  # Checking whether the input is a nonnegative
                 # real number or not
-                window2 = sg.popup('.بودجه شما نامعتبر است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                window2 = sg.popup('Your budget is invalid.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                 key = 0  # Updating the value of 'key'
                 event, values = window.read()  # Receiving input again
                 if values != None:
@@ -507,7 +507,7 @@ while True:
                 continue  # Going back to the validation cycle
 
             elif values['IN3'] == '' or values['IN3'] is None:  # Making sure that the user has entered the total budget and hasn't closed the window
-                window2 = sg.popup(".بودجه را وارد نکردید", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                window2 = sg.popup("You didn't enter the budget.", title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                 key = 0  # Updating the value of 'key'
                 event, values = window.read()  # Receiving input again
                 if values != None:
@@ -534,7 +534,7 @@ while True:
                                     key = 0  # Updating the value of 'key'
                                     key6 = 0  # Updating the value of 'key6'
                                     if event == 'OK' and table2.iloc[i, j] == 1 :  # Checking whether the cell is still empty or not
-                                        window2 = sg.popup('خانه واقع در سطر', i + 2, 'و ستون', j + 1, '.خالی است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                                        window2 = sg.popup('The cell at row', i + 2, 'and column', j + 1, 'is empty.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                                     break  # Getting out of the first loop since there is a problem with the inputs
 
                                 else:
@@ -542,7 +542,7 @@ while True:
                                         key = 0  # Updating the value of 'key'
                                         key6 = 0  # Updating the value of 'key'
                                         if event == 'OK' and table2.iloc[i, j] == 1 :  # Checking whether the cell is still empty or not
-                                            window2 = sg.popup('خانه واقع در سطر', i + 2, 'و ستون', j + 1, '.خالی است', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
+                                            window2 = sg.popup('The cell at row', i + 2, 'and column', j + 1, 'is empty.', title='', background_color='blue', icon=ICON)  # Displaying the relevant message
                                         break # Getting out of the first loop since there is a problem with the inputs
                     
                     if key6 == 0:  # Checking whether there is a problem with inputs or not
@@ -722,7 +722,7 @@ while True:
                     for i in I:
                         if pl.value(x[i]):  # Checking whether the values of the decision variables are 1 or not
                             LL.append(str(table4.iloc[i, 7]))
-                    window2 = sg.popup(f':باید در مکان های زیر حسگر نصب کنید \n{chr(10).join(LL)}', title='', background_color='blue', icon=ICON)  # Stating where to deploy the sensor
+                    window2 = sg.popup(f'You sould place sensors in these locations \n{chr(10).join(LL)}', title='', background_color='blue', icon=ICON)  # Stating where to deploy the sensor
                     sg.ProgressBar.update(window['k'], visible=False, current_count = 0)  # Updating the 'current_count' attribute of the bar to 0 since the optimization problem
                     # got solved
     else:
